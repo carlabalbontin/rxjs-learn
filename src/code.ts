@@ -1,36 +1,18 @@
-import { Observable } from "rxjs/Observable";
-import 'rxjs/add/operator/share';
+import { Subject } from "rxjs/Subject";
 
-var observable = Observable.create((observer:any) => {
-    try {
-        observer.next('Hey guys!')
-        observer.next('How are you?')
-        setInterval(() => {
-            observer.next('I am good')
-        }, 2000)
-    } catch(err) {
-        observer.error(err)
-    }
-}).share();
+//Create a new subject
+var subject = new Subject();
 
-var observer = observable.subscribe(
-    (x:any) => addItem(x),
-    (error:any) => addItem(error),
-    () => addItem('Completed')
-);
+//Create a subscription
+subject.subscribe(
+    data => addItem("Observer 1: " + data),
+    err => addItem("Error: " + err),
+    () => addItem("Observer 1 Completed")
+)
 
+//Emit values
+subject.next('The first thing has been sent');
 
-setTimeout( () => {
-    var observer2 = observable.subscribe(
-        (x:any) => addItem('Subscriber 2: ' + x)
-    )
-}, 1000);
-
-
-setTimeout( () => {
-    observer.unsubscribe();
-    //observer2.unsubscribe();
-}, 6000);
 
 function addItem(val:any) {
     var node = document.createElement("li");
