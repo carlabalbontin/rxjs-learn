@@ -1,11 +1,26 @@
-// import * as Rx from "rxjs";
-
-// var observable = Rx.fromEvent(document, 'mousemove');
-// console.log(observable);
-
 import { Observable } from "rxjs/Observable";
 
-var observable = Observable.create( (observer:any) => {
-    //to emit a value
-    observer.next('Hey guys!')
+var observable = Observable.create((observer:any) => {
+    try {
+        observer.next('Hey guys!')
+        observer.next('How are you?')
+        observer.complete()
+        observer.next('This will not send')
+    } catch(err) {
+        observer.error(err)
+    }
 });
+
+//define observer
+observable.subscribe(
+    (x:any) => addItem(x),
+    (error:any) => addItem(error),
+    () => addItem('Completed')
+)
+
+function addItem(val:any) {
+    var node = document.createElement("li");
+    var textnode = document.createTextNode(val);
+    node.appendChild(textnode);
+    document.getElementById("output").appendChild(node);
+}
