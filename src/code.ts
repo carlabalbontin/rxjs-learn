@@ -4,19 +4,30 @@ var observable = Observable.create((observer:any) => {
     try {
         observer.next('Hey guys!')
         observer.next('How are you?')
-        observer.complete()
-        observer.next('This will not send')
+        setInterval(() => {
+            observer.next('I am good')
+        }, 2000)
     } catch(err) {
         observer.error(err)
     }
 });
 
-//define observer
-observable.subscribe(
+var observer = observable.subscribe(
     (x:any) => addItem(x),
     (error:any) => addItem(error),
     () => addItem('Completed')
-)
+);
+
+var observer2 = observable.subscribe(
+    (x:any) => addItem(x)
+);
+
+//child subscriptions - now the unsubscribe together
+observer.add(observer2);
+
+setTimeout( () => {
+    observer.unsubscribe();
+}, 6001);
 
 function addItem(val:any) {
     var node = document.createElement("li");
