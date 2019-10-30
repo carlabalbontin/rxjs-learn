@@ -1,33 +1,33 @@
 import { Subject } from "rxjs/Subject";
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { ReplaySubject } from "rxjs/ReplaySubject";
 
 //Create a new subject
 var subject = new Subject();
-var behaviorSubject = new BehaviorSubject('First');
+var replaySubject = new ReplaySubject(2);
 
 //Create a subscription
-behaviorSubject.subscribe(
+replaySubject.subscribe(
     data => addItem("Observer 1: " + data),
     err => addItem("Error: " + err),
     () => addItem("Observer 1 Completed")
 )
 
 //Emit values
-behaviorSubject.next('The first thing has been sent');
-behaviorSubject.next('Observer 2 is about to subscribe...');
+replaySubject.next('The first thing has been sent');
+replaySubject.next('Observer 2 is about to subscribe...');
 
 
 //Second observer
-var observer2 = behaviorSubject.subscribe(
+var observer2 = replaySubject.subscribe(
     data => addItem("Observer 2: " + data)
 )
 
-behaviorSubject.next('The second thing has been sent');
-behaviorSubject.next('A third thing has been sent');
+replaySubject.next('The second thing has been sent');
+replaySubject.next('A third thing has been sent');
 
 observer2.unsubscribe();
 
-behaviorSubject.next('A final thing has been sent');
+replaySubject.next('A final thing has been sent');
 
 
 function addItem(val:any) {
