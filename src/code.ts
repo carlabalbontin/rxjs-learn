@@ -1,9 +1,7 @@
-import { Subject } from "rxjs/Subject";
 import { ReplaySubject } from "rxjs/ReplaySubject";
 
 //Create a new subject
-var subject = new Subject();
-var replaySubject = new ReplaySubject(2);
+var replaySubject = new ReplaySubject(30, 2000);
 
 //Create a subscription
 replaySubject.subscribe(
@@ -12,23 +10,15 @@ replaySubject.subscribe(
     () => addItem("Observer 1 Completed")
 )
 
-//Emit values
-replaySubject.next('The first thing has been sent');
-replaySubject.next('Observer 2 is about to subscribe...');
+var i = 1;
+var int = setInterval( () => replaySubject.next(i++), 1000);
 
 
-//Second observer
-var observer2 = replaySubject.subscribe(
-    data => addItem("Observer 2: " + data)
-)
-
-replaySubject.next('The second thing has been sent');
-replaySubject.next('A third thing has been sent');
-
-observer2.unsubscribe();
-
-replaySubject.next('A final thing has been sent');
-
+setTimeout( () => {
+    var observer2 = replaySubject.subscribe(
+        data => addItem("Observer 2: " + data)
+    )
+}, 5000);
 
 function addItem(val:any) {
     var node = document.createElement("li");
@@ -36,5 +26,5 @@ function addItem(val:any) {
     node.appendChild(textnode);
     document.getElementById("output").appendChild(node);
 }
-
+  
 
